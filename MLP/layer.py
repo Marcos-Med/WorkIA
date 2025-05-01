@@ -1,4 +1,5 @@
 import numpy as np
+from activation_functions.softmax import Softmax
 
 class Layer:
     def __init__(self, activation_function, n_neurons, n_inputs):
@@ -20,15 +21,18 @@ class Layer:
         return self.output
 
     def backward(self, dvalues, learning_rate):
-        """Propagação para trás e atualização de parâmetros"""
-        # gradiente da ativação
-        dactivation = dvalues * self.activation.derivative(self.z)
-        # gradientes de pesos e bias
+        """Backward com cuidado com última camada"""
+        # Detecta se é Softmax (não aplica derivative)
+        if isinstance(self.activation, Softmax):
+            dactivation = dvalues
+        else:
+            dactivation = dvalues * self.activation.derivative(self.z)
+
         self.dweights = np.dot(self.inputs.T, dactivation)
         self.dbiases = np.sum(dactivation, axis=0, keepdims=True)
-        # gradiente sobre entradas (para próxima camada)
         dinputs = np.dot(dactivation, self.weights.T)
-        # atualização
+
         self.weights -= learning_rate * self.dweights
         self.biases -= learning_rate * self.dbiases
+
         return dinputs
