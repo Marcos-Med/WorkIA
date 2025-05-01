@@ -1,14 +1,38 @@
-from neuron import Neuron
 import numpy as np
+from activation_functions.softmax import Softmax
 
-#Classe que define as Camadas Escondidas ou de Saída
 class Layer:
-    def __init__(self, ativation_function, n_neurons=1, n_inputs=1): #1 Neurônio e 1 entrada da camada anterior por padrão
-        self.__neurons = self.__create_neurons(ativation_function, n_neurons, n_inputs) # inicializa os neurônios
+    def __init__(self, activation_function, n_neurons, n_inputs):
+        """
+        activation_function: objeto com methods activation(x) e derivative(x)
+        n_neurons: número de neurônios na camada
+        n_inputs: número de entradas da camada
+        """
+        self.activation = activation_function
+        # Inicializa pesos (n_inputs x n_neurons) e biases (1 x n_neurons)
+        self.weights = np.random.randn(n_inputs, n_neurons) * 0.01
+        self.biases = np.zeros((1, n_neurons))
 
-    def __create_neurons(self, ativation_function, n_neurons, n_inputs): 
-        return [Neuron(ativation_function,n_inputs) for _ in range(n_neurons)] #cria um array de neurônios
-    
-    def response(self, inputs): 
-        array = np.asarray(inputs, dtype=float) #converte em array numpy
-        return np.array([neuron.response(array) for neuron in self.__neurons], dtype=float) #devolve a resposta da camada
+    def forward(self, inputs):
+        """Propagação para frente"""
+        self.inputs = inputs           # armazenar para backprop
+        self.z = np.dot(inputs, self.weights) + self.biases
+        self.output = self.activation.activation(self.z)
+        return self.output
+
+    def backward(self, dvalues, learning_rate):
+        """Backward com cuidado com última camada"""
+        # Detecta se é Softmax (não aplica derivative)
+        if isinstance(self.activation, Softmax):
+            dactivation = dvalues
+        else:
+            dactivation = dvalues * self.activation.derivative(self.z)
+
+        self.dweights = np.dot(self.inputs.T, dactivation)
+        self.dbiases = np.sum(dactivation, axis=0, keepdims=True)
+        dinputs = np.dot(dactivation, self.weights.T)
+
+        self.weights -= learning_rate * self.dweights
+        self.biases -= learning_rate * self.dbiases
+
+        return dinputs

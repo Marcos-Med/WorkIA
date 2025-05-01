@@ -1,19 +1,21 @@
 from layer import Layer
-#Classe que define MLP
+
 class MLP:
-    #configs = matriz onde cada linha é uma configuração da camada [quantidade_neurônios, quantidade_entradas, função_ativação]
-    def __init__(self, configs, trainer):
-        self.__layers = self.__create_layers(configs) # inicializa as camadas escondidas e de saída
-        self.__trainer = trainer #objeto que treina a MLP
+    def __init__(self, layers, trainer):
+        """
+        configs: lista de tuplas (n_neurons, n_inputs, activation_function)
+        trainer: objeto responsável pelo treinamento (ex: BackPropagation)
+        """
+        self.layers = layers
+        self.trainer = trainer 
 
-    def __create_layers(self, configs):
-        return [Layer(ativation_funct, n_neurons, n_inputs) for n_neurons, n_inputs, ativation_funct in configs] #cria o array de Camadas
+    def train(self, X, y):
+        """Treina a rede"""
+        self.trainer.train(X, y)
 
-    def train(self, x_train, y_train):
-        self.__trainer.train(x_train, y_train, self.__layers) #Treina a MLP
-
-    def predict(self, x_test): #Realiza o teste para um dado
-        inputs = x_test 
-        for layer in self.__layers: #feed-forward
-           inputs = layer.response(inputs)
-        return inputs
+    def predict(self, X):
+        """Retorna a saída da rede para X"""
+        output = X
+        for layer in self.layers:
+            output = layer.forward(output)
+        return output
