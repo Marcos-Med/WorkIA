@@ -1,6 +1,6 @@
 from losses.loss_crossentropy import LossCrossEntropy
 
-class BackPropagation:
+class Trainer:
     def __init__(self, layers, learning_rate=0.01, epochs=1000):
         self.layers = layers
         self.loss_fn = LossCrossEntropy()

@@ -21,14 +21,19 @@ class LossCrossEntropy:
         return np.mean(negative_log_likelihoods)
 
     def backward(self, predictions, targets):
-        """Gradiente simplificado para Softmax + CrossEntropy"""
+        """Calcula o gradiente da Loss"""
         samples = len(predictions)
 
+        # Clip para evitar divisão por 0
+        predictions_clipped = np.clip(predictions, 1e-7, 1 - 1e-7)
+
         if len(targets.shape) == 2:
-            dvalues = predictions - targets
+            # Se targets for one-hot
+            dvalues = -targets / predictions_clipped
         else:
-            dvalues = predictions.copy()
-            dvalues[range(samples), targets] -= 1
+            # Se targets forem rótulos inteiros
+            dvalues = np.zeros_like(predictions_clipped)
+            dvalues[range(samples), targets] = -1 / predictions_clipped[range(samples), targets]
 
+        # Normalizar pelos samples
         return dvalues / samples
-
