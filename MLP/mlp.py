@@ -1,15 +1,13 @@
 from layer import Layer
-from trainer import Trainer
 
 class MLP:
-    def __init__(self, configs, learning_rate=0.01, epochs=1000):
+    def __init__(self, layers, trainer):
         """
         configs: lista de tuplas (n_neurons, n_inputs, activation_function)
-        learning_rate: taxa de aprendizado
-        epochs: número de épocas
+        trainer: objeto responsável pelo treinamento (ex: BackPropagation)
         """
-        self.layers = [Layer(activation, n_neurons, n_inputs) for activation, n_neurons, n_inputs  in configs]
-        self.trainer = Trainer(self.layers, learning_rate, epochs)
+        self.layers = layers
+        self.trainer = trainer 
 
     def train(self, X, y):
         """Treina a rede"""
