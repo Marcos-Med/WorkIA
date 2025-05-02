@@ -2,9 +2,15 @@
 import numpy as np
 
 class Softmax:
-    """Função de ativação Softmax"""
+    __instance = None
 
-    def activation(self, x):
+    def __new__(cls): #Design Patterns Singleton
+        if cls.__instance is None:
+            cls.__instance = super(Softmax, cls).__new__()
+        return cls.__instance
+    
+    """Função de ativação Softmax"""
+    def __call__(self, x):
         exp_values = np.exp(x - np.max(x, axis=1, keepdims=True))  # estabilidade numérica
         probabilities = exp_values / np.sum(exp_values, axis=1, keepdims=True)
         return probabilities

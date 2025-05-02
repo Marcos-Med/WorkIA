@@ -2,8 +2,15 @@
 import numpy as np
 
 class ReLU:
+    __instance = None
+
+    def __new__(cls): #Design Patterns Singleton
+        if cls.__instance is None: 
+            cls.__instance = super(ReLU, cls).__new__()
+        return cls.__instance
+    
     """Função de ativação ReLU (Rectified Linear Unit)"""
-    def activation(self, x):
+    def __call__(self, x): #ReLU(10) = y
         return np.maximum(0, x)
 
     def derivative(self, x):
