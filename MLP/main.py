@@ -4,10 +4,12 @@ from trainer import BackPropagation
 from layer import Layer
 from activation_functions.ReLU import ReLU
 from activation_functions.softmax import Softmax
+import os
 
 # Caminhos para os arquivos
-X_txt_path = "../CARACTERES_COMPLETO/X.txt"
-Y_txt_path = "../CARACTERES_COMPLETO/Y_letra.txt"
+base_dir = os.path.dirname(__file__)
+X_txt_path = os.path.join(base_dir, "..", "CARACTERES_COMPLETO", "X.txt")
+Y_txt_path = os.path.join(base_dir, "..", "CARACTERES_COMPLETO", "Y_letra.txt")
 
 # Carrega X do .txt manualmente, ignorando valores vazios
 X = []
@@ -45,10 +47,8 @@ configs = [
     (n_classes, 64, Softmax())
 ]
 
-# Instancia camadas e trainer
-layers = [Layer(activation, n_neurons, n_inputs) for n_neurons, n_inputs, activation in configs]
-trainer = BackPropagation(layers, learning_rate=0.05, epochs=1000)
-mlp = MLP(layers, trainer)
+trainer = BackPropagation(learning_rate=0.05, epochs=1000)
+mlp = MLP(configs, trainer)
 
 # Treinamento
 mlp.train(X, y)

@@ -6,7 +6,7 @@ class Softmax:
 
     def __new__(cls): #Design Patterns Singleton
         if cls.__instance is None:
-            cls.__instance = super(Softmax, cls).__new__()
+            cls.__instance = super(Softmax, cls).__new__(cls)
         return cls.__instance
     
     """Função de ativação Softmax"""
@@ -16,6 +16,16 @@ class Softmax:
         return probabilities
 
     def derivative(self, x):
-        # Nota: a derivada correta do softmax é uma matriz jacobiana
-        # Para simplificação no seu projeto, a gente não usa derivative porque o loss já é combinado com softmax no backward
-        return np.ones_like(x)  # placeholder
+       softmax = self(x)
+       batch_size, num_classes = softmax.shape
+       jacobian = np.zeros((batch_size, num_classes, num_classes))
+       for i in range(batch_size):
+           s = softmax[i].reshape(-1, 1)
+           jacobian[i] = np.diagflat(s) - np.dot(s, s.T)
+       return jacobian
+    
+    def dactivation(self, dvalues, z):
+        return np.einsum('ijk,ik->ij', self.derivative(z), dvalues)
+    
+    def getName(self): #Nome da função de ativação
+        return "SoftMax"

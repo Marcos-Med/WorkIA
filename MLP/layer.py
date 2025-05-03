@@ -15,24 +15,25 @@ class Layer:
 
     def forward(self, inputs):
         """Propagação para frente"""
-        self.inputs = inputs           # armazenar para backprop
-        self.z = np.dot(inputs, self.__weights) + self.__biases
-        self.output = self.__activation.activation(self.z)
-        return self.output
+        self.__inputs = inputs           # armazenar para backprop
+        self.__z = np.dot(inputs, self.__weights) + self.__biases
+        return self.__activation(self.__z)
 
     def backward(self, dvalues, learning_rate):
-        """Backward com cuidado com última camada"""
-        # Detecta se é Softmax (não aplica derivative)
-        if isinstance(self.__activation, Softmax):
-            dactivation = dvalues
-        else:
-            dactivation = dvalues * self.__activation.derivative(self.z)
+        
+        dactivation = self.__activation.dactivation(dvalues, self.__z)
 
-        self.dweights = np.dot(self.inputs.T, dactivation)
-        self.dbiases = np.sum(dactivation, axis=0, keepdims=True)
+        dweights = np.dot(self.__inputs.T, dactivation)
+        dbiases = np.sum(dactivation, axis=0, keepdims=True)
         dinputs = np.dot(dactivation, self.__weights.T)
 
-        self.__weights -= learning_rate * self.dweights
-        self.__biases -= learning_rate * self.dbiases
+        self.__weights -= learning_rate * dweights
+        self.__biases -= learning_rate * dbiases
 
         return dinputs
+    
+    def getNameActivation(self): #Devolve o nome da função ativação
+        return self.__activation.getName()
+    
+    def getQuantityNeurons(self):
+        return self.__weights.shape[1] #neurons
