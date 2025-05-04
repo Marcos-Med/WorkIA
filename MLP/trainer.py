@@ -75,7 +75,7 @@ class BackPropagationCV:
             random.shuffle(samples)
             for idx, sample in enumerate(samples):
                 folds[idx % k].append(sample)
-
+        results = []
         for i in range(k):
             valid = folds[i]
             train = sum(folds[:i] + folds[i+1:], [])
@@ -88,12 +88,18 @@ class BackPropagationCV:
             for _ in range(self.get_epochs()):
                 self.train(layers, X_train, y_train)
 
-            acc = self.evaluate(layers, X_valid, y_valid)
-            print(f"Fold {i+1}/{k} - Acurácia: {acc:.4f}")
+            output = X_valid
+            for layer in layers:
+                output = layer.forward(output)
+            results.append({
+                'predictions': output,
+                'targets': y_valid
+            })
 
             if i != k - 1:
                 for layer in layers:
                     layer.reset()
+        return results
 
 class BackPropagationES:
     def __init__(self, loss, learning_rate=0.01, epochs=1000):
