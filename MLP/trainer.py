@@ -18,10 +18,16 @@ class BackPropagation:
 
             # Inicia backward pass com gradiente da loss
             dvalues = self.__loss_fn.backward(output, y)
-
+            
             # Backprop em cada layer (em ordem reversa)
             for layer in reversed(layers):
                 dvalues = layer.backward(dvalues, self.__lr)
 
             if epoch % 100 == 0 or epoch == 1:
                 print(f"Epoch {epoch}/{self.__epochs} - Loss: {loss:.6f}")
+
+    def get_learning_rate(self):
+        return self.__lr
+    
+    def get_epochs(self):
+        return self.__epochs
