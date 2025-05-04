@@ -91,8 +91,9 @@ class BackPropagationCV:
             acc = self.evaluate(layers, X_valid, y_valid)
             print(f"Fold {i+1}/{k} - Acurácia: {acc:.4f}")
 
-            #if i != k - 1:
-                #self.reset_layers()
+            if i != k - 1:
+                for layer in layers:
+                    layer.reset()
 
 class BackPropagationES:
     def __init__(self, loss, learning_rate=0.01, epochs=1000):
@@ -141,9 +142,3 @@ class BackPropagationES:
             epoch += 1
 
         print(f"Melhor acurácia\nÉpoca {epoch - self.get_epochs()}: {best_acc:.4f}")
-
-# Reseta os pesos no caso da validação cruzada
-    #def reset_layers(self):
-        #for layer in self.layers:
-            #if hasattr(layer, 'Reset'):
-               # layer.Reset()

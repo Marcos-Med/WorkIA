@@ -37,3 +37,6 @@ class Layer:
     
     def getQuantityNeurons(self):
         return self.__weights.shape[1] #neurons
+    
+    def reset(self):
+        self.__weights = np.random.randn(*self.__weights.shape) * 0.01
