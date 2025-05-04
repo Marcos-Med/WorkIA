@@ -1,7 +1,7 @@
 import numpy as np
 from mlp import MLP
-from trainer import BackPropagation
-from layer import Layer
+from trainer import *
+from losses.loss_crossentropy import LossCrossEntropy
 from activation_functions.ReLU import ReLU
 from activation_functions.softmax import Softmax
 import os
@@ -47,7 +47,7 @@ configs = [
     (n_classes, 64, Softmax())
 ]
 
-trainer = BackPropagation(learning_rate=0.05, epochs=1000)
+trainer = BackPropagation(LossCrossEntropy(), learning_rate=0.05, epochs=1000)
 mlp = MLP(configs, trainer)
 
 # Treinamento

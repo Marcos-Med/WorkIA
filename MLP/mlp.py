@@ -23,9 +23,9 @@ class MLP:
         print("\033[95m" + "="*60)
         print("\033[0m")
 
-    def train(self, X, y):
+    def train(self, X, y, k=None):
         """Treina a rede"""
-        self.__trainer.train(self.__layers, X, y)
+        self.__trainer.train(self.__layers, X, y, k)
 
     def predict(self, X):
         """Retorna a saída da rede para X"""
