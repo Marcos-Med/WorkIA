@@ -2,6 +2,13 @@
 import numpy as np
 
 class LossCrossEntropy:
+    __instance = None
+
+    def __new__(cls): #Design Patterns Singleton
+        if cls.__instance is None:
+            cls.__instance = super(LossCrossEntropy, cls).__new__(cls)
+        return cls.__instance
+    
     """Cross-Entropy Loss para classificação"""
 
     def forward(self, predictions, targets):
@@ -21,14 +28,7 @@ class LossCrossEntropy:
         return np.mean(negative_log_likelihoods)
 
     def backward(self, predictions, targets):
-        """Gradiente simplificado para Softmax + CrossEntropy"""
-        samples = len(predictions)
-
-        if len(targets.shape) == 2:
-            dvalues = predictions - targets
-        else:
-            dvalues = predictions.copy()
-            dvalues[range(samples), targets] -= 1
-
-        return dvalues / samples
+        predictions_clipped = np.clip(predictions, 1e-7, 1 - 1e-7)
+        grad = -targets / predictions_clipped
+        return grad / predictions.shape[0]
 
