@@ -1,6 +1,8 @@
 import numpy as np
 from mlp import MLP
 from trainer import BackPropagation
+from trainer import BackPropagationCV
+from trainer import BackPropagationES
 from layer import Layer
 from activation_functions.ReLU import ReLU
 from activation_functions.softmax import Softmax
@@ -45,16 +47,23 @@ configs = [
     (n_classes, 64, Softmax())
 ]
 
+# Define conjunto de treino e de teste
+X_train = X[:-130] 
+y_train = y[:-130]
+X_test = X[-130:]
+y_test = y[-130:]
+
 # Instancia camadas e trainer
 layers = [Layer(activation, n_neurons, n_inputs) for n_neurons, n_inputs, activation in configs]
 trainer = BackPropagation(layers, learning_rate=0.05, epochs=1000)
 mlp = MLP(layers, trainer)
 
 # Treinamento
-mlp.train(X, y)
+mlp.train(X_train, y_train)
 
 # Avaliação
-predictions = mlp.predict(X)
+predictions = mlp.predict(X_test)
 predicted_classes = np.argmax(predictions, axis=1)
-accuracy = np.mean(predicted_classes == y_raw)
+real_classes = np.argmax(y_test, axis=1)
+accuracy = np.mean(predicted_classes == real_classes)
 print(f"Acurácia final: {accuracy:.4f}")
