@@ -6,6 +6,8 @@ from activation_functions.ReLU import ReLU
 from activation_functions.softmax import Softmax
 import os
 
+np.random.seed(42)
+
 # Caminhos para os arquivos
 base_dir = os.path.dirname(__file__)
 X_txt_path = os.path.join(base_dir, "..", "CARACTERES_COMPLETO", "X.txt")
@@ -47,14 +49,20 @@ configs = [
     (n_classes, 64, Softmax())
 ]
 
+X_train = X[:-130]
+y_train = y[:-130]
+X_test = X[-130:]
+y_test = y[-130:]
+
 trainer = BackPropagation(LossCrossEntropy(), learning_rate=0.05, epochs=1000)
 mlp = MLP(configs, trainer)
 
 # Treinamento
-mlp.train(X, y)
+mlp.train(X_train, y_train)
 
 # Avaliação
-predictions = mlp.predict(X)
+predictions = mlp.predict(X_test)
 predicted_classes = np.argmax(predictions, axis=1)
-accuracy = np.mean(predicted_classes == y_raw)
+real_classes = np.argmax(y_test, axis=1)
+accuracy = np.mean(predicted_classes == real_classes)
 print(f"Acurácia final: {accuracy:.4f}")

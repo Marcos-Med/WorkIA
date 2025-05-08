@@ -7,7 +7,7 @@ class BackPropagation:
         self.__lr = learning_rate
         self.__epochs = epochs
 
-    def train(self, layers, X, y):
+    def train(self, layers, X, y, k=None):
         for epoch in range(1, self.__epochs+1):
             # Forward pass
             output = X
