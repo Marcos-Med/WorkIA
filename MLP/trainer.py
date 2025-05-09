@@ -85,8 +85,7 @@ class BackPropagationCV:
             X_valid = np.array([s[0] for s in valid])
             y_valid = np.array([s[1] for s in valid])
 
-            for _ in range(self.get_epochs()):
-                self.train(layers, X_train, y_train)
+            self.__trainer.train(layers, X_train, y_train)
 
             output = X_valid
             for layer in layers:

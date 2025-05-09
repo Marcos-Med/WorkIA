@@ -1,4 +1,4 @@
-from layer import Layer
+from .layer import Layer
 
 class MLP:
     def __init__(self, configs, trainer):
@@ -25,7 +25,7 @@ class MLP:
 
     def train(self, X, y, k=None):
         """Treina a rede"""
-        self.__trainer.train(self.__layers, X, y, k)
+        return self.__trainer.train(self.__layers, X, y, k)
 
     def predict(self, X):
         """Retorna a saída da rede para X"""
