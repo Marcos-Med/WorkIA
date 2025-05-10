@@ -85,8 +85,7 @@ class BackPropagationCV:
             X_valid = np.array([s[0] for s in valid])
             y_valid = np.array([s[1] for s in valid])
 
-            for _ in range(self.get_epochs()):
-                self.train(layers, X_train, y_train)
+            self.__trainer.train(layers, X_train, y_train)
 
             output = X_valid
             for layer in layers:
@@ -102,20 +101,33 @@ class BackPropagationCV:
         return results
 
 class BackPropagationES:
-    def __init__(self, loss, learning_rate=0.01, epochs=1000):
-        self.__trainer = BackPropagation(loss, learning_rate, epochs)
+    def __init__(self, loss, learning_rate=0.01, epochs=200):
+        self.__lr = learning_rate
+        self.__epochs = epochs
+        self.__loss = loss
 
     def evaluate(self,layers, inputs, targets):
-        return self.__trainer.evaluate(layers, inputs, targets)
+        output = inputs
+        for layer in layers:
+            output = layer.forward(output)
+        predicted = np.argmax(output, axis=1)
+        actual = np.argmax(targets, axis=1)
+        return np.mean(predicted == actual)
      
     def separate_by_class(self, X, y):
-        return self.__trainer.separate_by_class(X,y)
+        combined = np.concatenate((X, y), axis=1)
+        class_data = {}
+        for row in combined:
+            features, label = row[:-y.shape[1]], row[-y.shape[1]:]
+            key = tuple(label)
+            class_data.setdefault(key, []).append([features, label])
+        return class_data
 
     def get_learning_rate(self):
-        return self.__trainer.get_learning_rate()
+        return self.__lr
     
     def get_epochs(self):
-        return self.__trainer.get_epochs()
+        return self.__epochs
     
     def train(self,layers, X, y, k=None):
         class_data = self.separate_by_class(X, y)
@@ -137,7 +149,25 @@ class BackPropagationES:
         epoch = 0
 
         while patience > 0:
-            self.__trainer.train(layers, X_train, y_train)
+            output = X_train
+            for layer in layers:
+                output = layer.forward(output)
+
+            # Calcula loss
+            loss = self.__loss.forward(output, y_train)
+
+            # Inicia backward pass com gradiente da loss
+            dvalues = self.__loss.backward(output, y_train)
+            
+            # Backprop em cada layer (em ordem reversa)
+            for layer in reversed(layers):
+                dvalues = layer.backward(dvalues, self.get_learning_rate())
+
+            epoch += 1
+
+            if epoch % 100 == 0 or epoch == 1:
+                print(f"Epoch {epoch} - Loss: {loss:.6f}")
+
             acc = self.evaluate(layers, X_valid, y_valid)
 
             if acc > best_acc:
@@ -145,6 +175,5 @@ class BackPropagationES:
                 patience = self.get_epochs()
             else:
                 patience -= 1
-            epoch += 1
 
-        print(f"Melhor acurácia\nÉpoca {epoch - self.get_epochs()}: {best_acc:.4f}")
+        print(f"Melhor acurácia\nÉpoca {epoch}: {best_acc:.4f}")

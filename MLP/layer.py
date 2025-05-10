@@ -1,5 +1,5 @@
 import numpy as np
-from activation_functions.softmax import Softmax
+from .activation_functions.softmax import Softmax
 
 class Layer:
     def __init__(self, activation_function, n_neurons, n_inputs):
