@@ -1,9 +1,9 @@
 import numpy as np
-from mlp import MLP
-from trainer import *
-from losses.loss_crossentropy import LossCrossEntropy
-from activation_functions.ReLU import ReLU
-from activation_functions.softmax import Softmax
+from .mlp import MLP
+from .trainer import *
+from .losses.loss_crossentropy import LossCrossEntropy
+from .activation_functions.ReLU import ReLU
+from .activation_functions.softmax import Softmax
 import os
 
 np.random.seed(42)
