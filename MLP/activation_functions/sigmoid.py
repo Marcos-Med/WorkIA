@@ -1,6 +1,7 @@
 import numpy as np
+from .fn_activation import Activation
 
-class Sigmoid:
+class Sigmoid(Activation):
     __instance = None
 
     def __new__(cls): #Design Patterns Singleton
@@ -15,10 +16,4 @@ class Sigmoid:
     def derivative(self, x):
         sig = 1 / (1 + np.exp(-x))
         return sig * (1 - sig)
-    
-    def dactivation(self, dvalues, z):
-        return dvalues * self.derivative(z)
-    
-    def getName(self): #Nome da função de ativação
-        return "Sigmoid"
     

@@ -1,7 +1,8 @@
 # activation_functions/softmax.py
 import numpy as np
+from .fn_activation import Activation
 
-class Softmax:
+class Softmax(Activation):
     __instance = None
 
     def __new__(cls): #Design Patterns Singleton
@@ -24,8 +25,6 @@ class Softmax:
            jacobian[i] = np.diagflat(s) - np.dot(s, s.T)
        return jacobian
     
-    def dactivation(self, dvalues, z):
+    def dactivation(self, dvalues, z): #Gradiente da SoftMax
         return np.einsum('ijk,ik->ij', self.derivative(z), dvalues)
     
-    def getName(self): #Nome da função de ativação
-        return "SoftMax"

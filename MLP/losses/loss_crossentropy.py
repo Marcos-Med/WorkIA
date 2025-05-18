@@ -32,3 +32,5 @@ class LossCrossEntropy:
         grad = -targets / predictions_clipped
         return grad / predictions.shape[0]
 
+    def getName(self):
+        return "crossentropy"

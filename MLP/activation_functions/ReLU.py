@@ -1,7 +1,8 @@
 # activation_functions/relu.py
 import numpy as np
+from .fn_activation import Activation
 
-class ReLU:
+class ReLU(Activation):
     __instance = None
 
     def __new__(cls): #Design Patterns Singleton
@@ -16,8 +17,3 @@ class ReLU:
     def derivative(self, x):
         return np.where(x > 0, 1.0, 0.0)
     
-    def dactivation(self, dvalues, z):
-        return dvalues * self.derivative(z)
-    
-    def getName(self): #Nome da função
-        return "ReLU"

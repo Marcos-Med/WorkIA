@@ -19,7 +19,7 @@ class Layer:
         self.__z = np.dot(inputs, self.__weights) + self.__biases
         return self.__activation(self.__z)
 
-    def backward(self, dvalues, learning_rate):
+    def backward(self, dvalues, learning_rate): #Retropropaga o erro
         
         dactivation = self.__activation.dactivation(dvalues, self.__z)
 
@@ -40,3 +40,18 @@ class Layer:
     
     def reset(self):
         self.__weights = np.random.randn(*self.__weights.shape) * 0.01
+    
+    def getWeights(self):
+        return self.__weights
+    
+    def getBiases(self):
+        return self.__biases
+    
+    def getParamsActivation(self): #Parametros da função de ativação
+        return self.__activation.getParams()
+    
+    def setWeights(self, weights):
+        self.__weights = np.array(weights)
+    
+    def setBiases(self, biases):
+        self.__biases = np.array(biases)

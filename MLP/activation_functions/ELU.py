@@ -1,7 +1,8 @@
 # activation_functions/ELU.py
 import numpy as np
+from .fn_activation import Activation
 
-class ELU:
+class ELU(Activation):
     
     def __init__(self, alpha=1.0):
         self.__alpha = alpha
@@ -13,8 +14,5 @@ class ELU:
     def derivative(self, x):
         return np.where(x > 0, 1.0, self.__alpha * np.exp(x))
     
-    def dactivation(self, dvalues, z):
-        return dvalues * self.derivative(z)
-    
-    def getName(self): #Nome da função
-        return "ELU"
+    def getParams(self):
+        return {"alpha": self.__alpha}

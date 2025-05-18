@@ -19,3 +19,6 @@ class LossMSE:
         samples = targets.shape[0]
         dvalues = 2 * (predictions - targets) / samples
         return dvalues
+    
+    def getName(self):
+        return "mse"
