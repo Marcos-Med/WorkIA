@@ -4,6 +4,7 @@ from .trainer import *
 from .losses.loss_crossentropy import LossCrossEntropy
 from .activation_functions.ReLU import ReLU
 from .activation_functions.softmax import Softmax
+from .confusion_matrix import get_confusion_matrix
 import os
 
 np.random.seed(42)
@@ -66,3 +67,7 @@ predicted_classes = np.argmax(predictions, axis=1)
 real_classes = np.argmax(y_test, axis=1)
 accuracy = np.mean(predicted_classes == real_classes)
 print(f"Acurácia final: {accuracy:.4f}")
+
+labels = np.unique(letras)
+get_confusion_matrix(predictions, y_test, labels) #Matriz de confusão
+mlp.save("MLP/models/mlp.model") #salva modelo

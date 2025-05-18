@@ -1,6 +1,7 @@
 import numpy as np
+from .fn_activation import Activation
 
-class Tanh:
+class Tanh(Activation):
     __instance = None
 
     def __new__(cls): #Design Patterns Singleton
@@ -16,9 +17,3 @@ class Tanh:
     def derivative(self, x):
         tanh = self(x)
         return 1 - tanh ** 2
-    
-    def dactivation(self, dvalues, z):
-        return dvalues * self.derivative(z)
-    
-    def getName(self): #Nome da função
-        return "Tanh"

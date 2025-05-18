@@ -1,7 +1,8 @@
 # activation_functions/leakyReLU.py
 import numpy as np
+from .fn_activation import Activation
 
-class LeakyReLU:
+class LeakyReLU(Activation):
     
     def __init__(self, alpha=0.01):
         self.__alpha = alpha
@@ -13,8 +14,5 @@ class LeakyReLU:
     def derivative(self, x):
         return np.where(x > 0, 1.0, self.__alpha)
     
-    def dactivation(self, dvalues, z):
-        return dvalues * self.derivative(z)
-    
-    def getName(self): #Nome da função
-        return "LeakyReLU"
+    def getParams(self):
+        return {"alpha": self.__alpha}

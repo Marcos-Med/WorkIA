@@ -33,6 +33,12 @@ class BackPropagation:
     def get_epochs(self):
         return self.__epochs
     
+    def get_lossName(self):
+        return self.__loss_fn.getName()
+    
+    def getType(self):
+        return "BackPropagation"
+    
     def evaluate(self,layers, inputs, targets):
         output = inputs
         for layer in layers:
@@ -50,7 +56,7 @@ class BackPropagation:
             class_data.setdefault(key, []).append([features, label])
         return class_data
 
-class BackPropagationCV:
+class BackPropagationCV: #BackPropagation com Validação Cruzada
     def __init__(self, loss, learning_rate=0.01, epochs=1000):
         self.__trainer = BackPropagation(loss, learning_rate, epochs)
     
@@ -65,6 +71,12 @@ class BackPropagationCV:
     
     def get_epochs(self):
         return self.__trainer.get_epochs()
+    
+    def get_lossName(self):
+        return self.__trainer.get_lossName()
+    
+    def getType(self):
+        return "BackPropagationCV"
 
     def train(self,layers, X, y, k=5):
         class_data = self.separate_by_class(X, y)
@@ -100,7 +112,7 @@ class BackPropagationCV:
                     layer.reset()
         return results
 
-class BackPropagationES:
+class BackPropagationES: #BackPropagation com Early Stopping
     def __init__(self, loss, learning_rate=0.01, epochs=200):
         self.__lr = learning_rate
         self.__epochs = epochs
@@ -128,6 +140,12 @@ class BackPropagationES:
     
     def get_epochs(self):
         return self.__epochs
+    
+    def get_lossName(self):
+        return self.__loss.getName()
+    
+    def getType(self):
+        return "BackPropagationES"
     
     def train(self,layers, X, y, k=None):
         class_data = self.separate_by_class(X, y)
